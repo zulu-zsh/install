@@ -1,0 +1,63 @@
+#!/usr/bin/env zsh
+
+local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+
+###
+# Create the zulu directory structure
+###
+function _zulu_create_base() {
+  local dirs=('bin' 'config' 'init' 'packages' 'share')
+  for dir in "${dirs[@]}"; do
+    mkdir -p "$base/$dir"
+    touch "$base/$dir/.gitkeep"
+  done
+}
+
+function _zulu_install_core() {
+  git clone "https://github.com/zulu-zsh/core" "$base/.core"
+  git clone "https://github.com/zulu-zsh/index" "$base/.index"
+}
+
+###
+# Use current $PATH to build a pathfile
+###
+function _zulu_create_path() {
+  local pathfile="$base/config/path"
+  echo "$base/bin" > $pathfile
+  for p in "${(@s/:/)PATH}"; do
+    echo "$p" >> $pathfile
+  done
+}
+
+###
+# Use current $fpath to build an fpathfile
+###
+function _zulu_create_fpath() {
+  local fpathfile="$base/config/fpath"
+  echo "$base/share" >! $fpathfile
+  for fp in "${fpath[@]}"; do
+    echo $fp >> $fpathfile
+  done
+}
+
+function _zulu_install_init() {
+  # Add the init script to .zshrc
+  local init='
+# Initialise zulu plugin manager
+source "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}/.core/zulu"
+zulu init
+'
+
+  echo "$init" >> "${ZDOTDIR:-$HOME}/.zshrc"
+}
+
+
+function zulu_install() {
+  _zulu_create_base
+  _zulu_install_core
+  _zulu_create_path
+  _zulu_create_fpath
+  _zulu_install_init
+}
+
+zulu_install
