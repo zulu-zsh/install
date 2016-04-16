@@ -14,7 +14,7 @@ function _zulu_create_base() {
 }
 
 function _zulu_install_core() {
-  git clone "https://github.com/zulu-zsh/core" "$base/.core"
+  git clone "https://github.com/zulu-zsh/zulu" "$base/.core"
   git clone "https://github.com/zulu-zsh/index" "$base/.index"
 }
 
