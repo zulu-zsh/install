@@ -34,7 +34,7 @@ function _zulu_create_path() {
 ###
 function _zulu_create_fpath() {
   local fpathfile="$base/config/fpath"
-  echo "$base/share" >! $fpathfile
+  echo "$base/share" > $fpathfile
   for fp in "${fpath[@]}"; do
     echo $fp >> $fpathfile
   done
@@ -58,6 +58,11 @@ function zulu_install() {
   _zulu_create_path
   _zulu_create_fpath
   _zulu_install_init
+
+  # Source zulu and install dependencies
+  source "$base/.core/zulu"
+
+  zulu install color async
 }
 
 zulu_install
