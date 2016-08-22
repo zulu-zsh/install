@@ -81,8 +81,6 @@ function zulu_install() {
   # Source zulu and install dependencies
   source "$base/.core/zulu"
   zulu init
-
-  zulu install color async
 }
 
 zulu_install
