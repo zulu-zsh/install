@@ -13,6 +13,9 @@ function _zulu_create_base() {
   done
 }
 
+###
+# Install the zulu core functions and index
+###
 function _zulu_install_core() {
   git clone "https://github.com/zulu-zsh/zulu" "$base/.core"
   git clone "https://github.com/zulu-zsh/index" "$base/.index"
@@ -40,6 +43,19 @@ function _zulu_create_fpath() {
   done
 }
 
+###
+# Use current aliases to build alias file
+###
+function _zulu_create_aliases() {
+  local aliasfile="$base/config/alias"
+  IFS=$'\n'; for a in `alias`; do
+    echo "alias $a" >> $aliasfile
+  done
+}
+
+###
+# Install the initialization script
+###
 function _zulu_install_init() {
   # Add the init script to .zshrc
   local init='
@@ -51,12 +67,15 @@ zulu init
   echo "$init" >> "${ZDOTDIR:-$HOME}/.zshrc"
 }
 
-
+###
+# Install the zulu framework
+###
 function zulu_install() {
   _zulu_create_base
   _zulu_install_core
   _zulu_create_path
   _zulu_create_fpath
+  _zulu_create_aliases
   _zulu_install_init
 
   # Source zulu and install dependencies
