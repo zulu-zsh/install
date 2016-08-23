@@ -54,6 +54,13 @@ function _zulu_create_aliases() {
 }
 
 ###
+# Install the zulu completion definitions
+###
+function _zulu_install_completion() {
+  ln -s "$base/config/.core/zulu.zsh-completion" "$base/share/_zulu"
+}
+
+###
 # Install the initialization script
 ###
 function _zulu_install_init() {
@@ -76,6 +83,7 @@ function zulu_install() {
   _zulu_create_path
   _zulu_create_fpath
   _zulu_create_aliases
+  _zulu_install_completion
   _zulu_install_init
 
   # Source zulu and install dependencies
