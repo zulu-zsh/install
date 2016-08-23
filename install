@@ -1,31 +1,34 @@
 #!/usr/bin/env zsh
 
-local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
 ###
 # Create the zulu directory structure
 ###
 function _zulu_create_base() {
-  local dirs=('bin' 'config' 'init' 'packages' 'share')
+  local dirs=('bin' 'init' 'packages' 'share')
   for dir in "${dirs[@]}"; do
     mkdir -p "$base/$dir"
     touch "$base/$dir/.gitkeep"
   done
+
+  mkdir -p "$config"
 }
 
 ###
 # Install the zulu core functions and index
 ###
 function _zulu_install_core() {
-  git clone "https://github.com/zulu-zsh/zulu" "$base/.core"
-  git clone "https://github.com/zulu-zsh/index" "$base/.index"
+  git clone "https://github.com/zulu-zsh/zulu" "$base/core"
+  git clone "https://github.com/zulu-zsh/index" "$base/index"
 }
 
 ###
 # Use current $PATH to build a pathfile
 ###
 function _zulu_create_path() {
-  local pathfile="$base/config/path"
+  local pathfile="$config/path"
   echo "$base/bin" > $pathfile
   for p in "${(@s/:/)PATH}"; do
     echo "$p" >> $pathfile
@@ -36,7 +39,7 @@ function _zulu_create_path() {
 # Use current $fpath to build an fpathfile
 ###
 function _zulu_create_fpath() {
-  local fpathfile="$base/config/fpath"
+  local fpathfile="$config/fpath"
   echo "$base/share" > $fpathfile
   for fp in "${fpath[@]}"; do
     echo $fp >> $fpathfile
@@ -47,7 +50,7 @@ function _zulu_create_fpath() {
 # Use current aliases to build alias file
 ###
 function _zulu_create_aliases() {
-  local aliasfile="$base/config/alias"
+  local aliasfile="$config/alias"
   echo "" > $aliasfile
   IFS=$'\n'; for a in `alias`; do
     echo "alias $a\n" >> $aliasfile
@@ -58,7 +61,7 @@ function _zulu_create_aliases() {
 # Install the zulu completion definitions
 ###
 function _zulu_install_completion() {
-  ln -s "$base/.core/zulu.zsh-completion" "$base/share/_zulu"
+  ln -s "$base/core/zulu.zsh-completion" "$base/share/_zulu"
 }
 
 ###
@@ -68,7 +71,7 @@ function _zulu_install_init() {
   # Add the init script to .zshrc
   local init='
 # Initialise zulu plugin manager
-source "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}/.core/zulu"
+source "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}/core/zulu"
 zulu init
 '
 
@@ -88,7 +91,7 @@ function zulu_install() {
   _zulu_install_init
 
   # Source zulu and install dependencies
-  source "$base/.core/zulu"
+  source "$base/core/zulu"
   zulu init
 }
 
