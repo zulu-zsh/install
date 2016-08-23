@@ -3,6 +3,67 @@
 local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
 local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
+function _zulu_color() {
+  local color=$1
+
+  shift
+
+  case $color in
+    black)    echo "\033[0;30m${@}\033[0;m" ;;
+    red)      echo "\033[0;31m${@}\033[0;m" ;;
+    green)    echo "\033[0;32m${@}\033[0;m" ;;
+    yellow)   echo "\033[0;33m${@}\033[0;m" ;;
+    blue)     echo "\033[0;34m${@}\033[0;m" ;;
+    magenta)  echo "\033[0;35m${@}\033[0;m" ;;
+    cyan)     echo "\033[0;36m${@}\033[0;m" ;;
+    white)    echo "\033[0;37m${@}\033[0;m" ;;
+  esac
+}
+
+function _zulu_spinner_callback() {
+  print $@
+}
+
+function _zulu_spinner_process() {
+  local msg="$1" spinner_index=0
+
+  while [[ 1=1 ]]; do
+    _zulu_spinner_spin
+    sleep 0.1
+  done
+}
+
+function _zulu_spinner_spin() {
+  local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+
+  # ZSH arrays start at 1, so we need to bump the index if it's 0
+  if [[ $spinner_index -eq 0 ]]; then
+    spinner_index+=1
+  fi
+
+  # Echo the frame
+  echo -n $frames[$spinner_index]
+
+  # Set the spinner index to the next frame
+  spinner_index=$(( $(( $spinner_index + 1 )) % ${#frames} ))
+
+  # Echo the message and return to the beginning of the line
+  echo -en " $msg\r"
+}
+
+function _zulu_spinner_start() {
+  local msg="$1"
+
+  _zulu_spinner_process "$msg" &!
+  export ZULU_SPINNER_PID=$!
+}
+
+function _zulu_spinner_stop() {
+  [[ "$ZULU_SPINNER_PID" != "" ]] && kill "$ZULU_SPINNER_PID" > /dev/null
+  unset ZULU_SPINNER_PID
+}
+
+
 ###
 # Create the zulu directory structure
 ###
@@ -17,10 +78,16 @@ function _zulu_create_base() {
 }
 
 ###
-# Install the zulu core functions and index
+# Install the zulu core functions
 ###
 function _zulu_install_core() {
   git clone "https://github.com/zulu-zsh/zulu" "$base/core"
+}
+
+###
+# Install the package index
+###
+function _zulu_install_index() {
   git clone "https://github.com/zulu-zsh/index" "$base/index"
 }
 
@@ -82,13 +149,101 @@ zulu init
 # Install the zulu framework
 ###
 function zulu_install() {
-  _zulu_create_base
-  _zulu_install_core
-  _zulu_create_path
-  _zulu_create_fpath
-  _zulu_create_aliases
-  _zulu_install_completion
-  _zulu_install_init
+  _zulu_spinner_start "Creating directory structure..."
+  out=$(_zulu_create_base 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Created directory structure        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error creating directory structure        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Installing zulu core..."
+  out=$(_zulu_install_core 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Installed zulu core        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error installing zulu core        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Installing package index..."
+  out=$(_zulu_install_index 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Installed package index        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error installing package index        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Initializing \$PATH..."
+  out=$(_zulu_create_path 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Initialized \$PATH        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error initializing \$PATH        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Initializing \$fpath..."
+  out=$(_zulu_create_fpath 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Initialized \$fpath        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error initializing \$fpath        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Initializing aliases..."
+  out=$(_zulu_create_aliases 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Initialized aliases        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error initializing aliases        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Installing completion..."
+  out=$(_zulu_install_completion 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Installed completion        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error installing completion        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Installing initialization script..."
+  out=$(_zulu_install_init 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Installed initialization script        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error installing initialization script        "
+    echo "$out"
+  fi
 
   # Source zulu and install dependencies
   source "$base/core/zulu"
