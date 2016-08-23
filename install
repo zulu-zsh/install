@@ -48,7 +48,7 @@ function _zulu_create_fpath() {
 ###
 function _zulu_create_aliases() {
   local aliasfile="$base/config/alias"
-  touch $aliasfile
+  echo "" > $aliasfile
   IFS=$'\n'; for a in `alias`; do
     echo "alias $a\n" >> $aliasfile
   done
