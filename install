@@ -97,7 +97,7 @@ function _zulu_install_index() {
 function _zulu_create_path() {
   local pathfile="$config/path"
   echo "$base/bin" > $pathfile
-  for p in "${(@s/:/)PATH}"; do
+  for p in "${path[@]}"; do
     echo "$p" >> $pathfile
   done
 }
@@ -110,6 +110,17 @@ function _zulu_create_fpath() {
   echo "$base/share" > $fpathfile
   for fp in "${fpath[@]}"; do
     echo $fp >> $fpathfile
+  done
+}
+
+###
+# Use current $cdpath to build an cdpathfile
+###
+function _zulu_create_cdpath() {
+  local cdpathfile="$config/cdpath"
+  echo "$base/share" > $cdpathfile
+  for fp in "${cdpath[@]}"; do
+    echo $fp >> $cdpathfile
   done
 }
 
@@ -206,6 +217,18 @@ function zulu_install() {
   else
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error initializing \$fpath        "
+    echo "$out"
+  fi
+
+  _zulu_spinner_start "Initializing \$cdpath..."
+  out=$(_zulu_create_cdpath 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Initialized \$cdpath        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error initializing \$cdpath        "
     echo "$out"
   fi
 
