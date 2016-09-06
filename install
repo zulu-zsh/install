@@ -157,6 +157,24 @@ zulu init
 }
 
 ###
+# Remove zulu directories if install fails
+###
+function _zulu_install_cleanup_on_failure() {
+  _zulu_spinner_start "Rolling back installation..."
+  
+  if [[ -d $base ]]; then
+    rm -rf $base
+  fi
+  
+  if [[ -d $config ]]; then
+    rm -rf $config
+  fi
+  
+  echo "$(_zulu_color green '✔') Installation rolled back successfully        "
+  _zulu_spinner_stopped
+}
+
+###
 # Install the zulu framework
 ###
 function zulu_install() {
@@ -170,6 +188,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error creating directory structure        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Installing zulu core..."
@@ -182,6 +202,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error installing zulu core        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Installing package index..."
@@ -194,6 +216,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error installing package index        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Initializing \$PATH..."
@@ -206,6 +230,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error initializing \$PATH        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Initializing \$fpath..."
@@ -218,6 +244,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error initializing \$fpath        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Initializing \$cdpath..."
@@ -230,6 +258,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error initializing \$cdpath        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Initializing aliases..."
@@ -242,6 +272,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error initializing aliases        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Installing completion..."
@@ -254,6 +286,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error installing completion        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   _zulu_spinner_start "Installing initialization script..."
@@ -266,6 +300,8 @@ function zulu_install() {
     _zulu_spinner_stop
     echo "$(_zulu_color red '✘') Error installing initialization script        "
     echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
   fi
 
   # Source zulu and install dependencies
