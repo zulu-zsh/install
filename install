@@ -75,6 +75,7 @@ function _zulu_create_base() {
   done
 
   mkdir -p "$config"
+  touch "$config/packages"
 }
 
 ###
