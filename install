@@ -343,7 +343,10 @@ function zulu_install() {
   # Source zulu and install dependencies
   source "$base/core/zulu"
   zulu init
-  zulu bundle
+
+  # Install some important packages
+  zulu install filthy color revolver
+  zulu theme filthy
 }
 
 zulu_install
