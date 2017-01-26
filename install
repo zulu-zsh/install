@@ -74,7 +74,7 @@ function _zulu_create_base() {
     touch "$base/$dir/.gitkeep"
   done
 
-  mkdir -p "$config"
+  mkdir -p "$config/functions"
   touch "$config/packages"
 }
 
