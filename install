@@ -347,6 +347,21 @@ function zulu_install() {
   # Install some important packages
   zulu install filthy color revolver
   zulu theme filthy
+
+  echo
+  echo " _____         ___"
+  echo "/__  /  __  __/  /_  __"
+  echo "  / /  / / / /  / / / /"
+  echo " / /__/ /_/ /  / /_/ /"
+  echo "/____/\\____/__/\\____/"
+  echo
+  echo "Version $(zulu --version)"
+  echo
+  echo "Thanks for installing Zulu! You're now all set up and ready to go."
+  echo
+  echo "Documentation: https://zulu.sh/docs"
+  echo "Feedback:      https://github.com/zulu-zsh/zulu/issues"
+  echo
 }
 
 zulu_install
