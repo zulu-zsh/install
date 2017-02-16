@@ -97,10 +97,19 @@ function _zulu_install_index() {
 ###
 function _zulu_create_path() {
   local pathfile="$config/path"
-  echo "$base/bin" > $pathfile
+
+  typeset -gUa items; items=()
+  items+="$base/bin"
   for p in "${path[@]}"; do
-    echo "$p" >> $pathfile
+    items+="$p"
   done
+
+  local separator out
+
+  # Separate the array by newlines, and print the contents to the pathfile
+  separator=$'\n'
+  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  echo ${out:${#separator}} >! $pathfile
 }
 
 ###
@@ -108,10 +117,19 @@ function _zulu_create_path() {
 ###
 function _zulu_create_fpath() {
   local fpathfile="$config/fpath"
-  echo "$base/share" > $fpathfile
-  for fp in "${fpath[@]}"; do
-    echo $fp >> $fpathfile
+
+  typeset -gUa items; items=()
+  items+="$base/share"
+  for p in "${fpath[@]}"; do
+    items+="$p"
   done
+
+  local separator out
+
+  # Separate the array by newlines, and print the contents to the fpathfile
+  separator=$'\n'
+  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  echo ${out:${#separator}} >! $fpathfile
 }
 
 ###
@@ -119,10 +137,18 @@ function _zulu_create_fpath() {
 ###
 function _zulu_create_cdpath() {
   local cdpathfile="$config/cdpath"
-  echo "" > $cdpathfile
-  for fp in "${cdpath[@]}"; do
-    echo $fp >> $cdpathfile
+
+  typeset -gUa items; items=()
+  for p in "${cdpath[@]}"; do
+    items+="$p"
   done
+
+  local separator out
+
+  # Separate the array by newlines, and print the contents to the cdpathfile
+  separator=$'\n'
+  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  echo ${out:${#separator}} >! $cdpathfile
 }
 
 ###
