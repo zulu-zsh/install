@@ -119,7 +119,7 @@ function _zulu_create_fpath() {
 ###
 function _zulu_create_cdpath() {
   local cdpathfile="$config/cdpath"
-  echo "$base/share" > $cdpathfile
+  echo "" > $cdpathfile
   for fp in "${cdpath[@]}"; do
     echo $fp >> $cdpathfile
   done
