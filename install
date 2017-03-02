@@ -108,8 +108,11 @@ function _zulu_create_path() {
 
   # Separate the array by newlines, and print the contents to the pathfile
   separator=$'\n'
-  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  local oldIFS=$IFS
+  IFS="$separator"; out="${items[*]/#/${separator}}"
   echo ${out:${#separator}} >! $pathfile
+  IFS=$oldIFS
+  unset oldIFS
 }
 
 ###
@@ -128,8 +131,11 @@ function _zulu_create_fpath() {
 
   # Separate the array by newlines, and print the contents to the fpathfile
   separator=$'\n'
-  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  local oldIFS=$IFS
+  IFS="$separator"; out="${items[*]/#/${separator}}"
   echo ${out:${#separator}} >! $fpathfile
+  IFS=$oldIFS
+  unset oldIFS
 }
 
 ###
@@ -147,8 +153,11 @@ function _zulu_create_cdpath() {
 
   # Separate the array by newlines, and print the contents to the cdpathfile
   separator=$'\n'
-  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  local oldIFS=$IFS
+  IFS="$separator"; out="${items[*]/#/${separator}}"
   echo ${out:${#separator}} >! $cdpathfile
+  IFS=$oldIFS
+  unset oldIFS
 }
 
 ###
@@ -157,9 +166,12 @@ function _zulu_create_cdpath() {
 function _zulu_create_aliases() {
   local aliasfile="$config/alias"
   echo "" > $aliasfile
+  local oldIFS=$IFS
   IFS=$'\n'; for a in `alias`; do
     echo "alias $a\n" >> $aliasfile
   done
+  IFS=$oldIFS
+  unset oldIFS
 }
 
 ###
