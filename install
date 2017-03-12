@@ -378,10 +378,16 @@ function zulu_install() {
     exit 1
   fi
 
+  local oldPWD=$PWD
+  cd "$base/core"
   _zulu_spinner_start "Running build script..."
   out=$(./build.zsh 2>&1)
+  state=$?
 
-  if [ $? -eq 0 ]; then
+  cd $oldPWD
+  unset oldPWD
+
+  if [ $state -eq 0 ]; then
     _zulu_spinner_stop
     echo "$(_zulu_color green '✔') Build script complete        "
   else
