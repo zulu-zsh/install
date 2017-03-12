@@ -378,6 +378,20 @@ function zulu_install() {
     exit 1
   fi
 
+  _zulu_spinner_start "Running build script..."
+  out=$(./build.zsh 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(_zulu_color green '✔') Build script complete        "
+  else
+    _zulu_spinner_stop
+    echo "$(_zulu_color red '✘') Error running build script        "
+    echo "$out"
+    _zulu_install_cleanup_on_failure
+    exit 1
+  fi
+
   # Source zulu and install dependencies
   source "$base/core/zulu"
   zulu init
