@@ -403,7 +403,7 @@ function zulu_install() {
   zulu init
 
   # Install some important packages
-  zulu install filthy color revolver
+  zulu install color revolver filthy
   zulu theme filthy
 
   echo
