@@ -220,7 +220,7 @@ function _zulu_install_cleanup_on_failure() {
   fi
 
   echo "$(_zulu_color green '✔') Installation rolled back successfully        "
-  _zulu_spinner_stopped
+  _zulu_spinner_stop
 }
 
 ###
