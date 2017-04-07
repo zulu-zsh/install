@@ -403,8 +403,8 @@ function zulu_install() {
   zulu init
 
   # Install some important packages
-  zulu install color revolver filthy
-  zulu theme filthy
+  zulu install color revolver zulu-theme
+  zulu theme zulu-theme
 
   echo
   echo " _____         ___"
