@@ -419,6 +419,7 @@ function zulu_install() {
   echo
   echo "Documentation: https://zulu.sh/docs"
   echo "Feedback:      https://github.com/zulu-zsh/zulu/issues"
+  echo "Community:     https://gitter.im/zulu-zsh/zulu
   echo
 }
 
