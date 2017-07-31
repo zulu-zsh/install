@@ -189,7 +189,7 @@ function _zulu_install_init() {
   if [[ -e "${ZDOTDIR:-$HOME}/.zshrc" ]]; then
     # If it contains the command 'zulu init', we don't need to
     # add the initialisation script again
-    local check_script=$(cat "${ZDOTDIR:-$HOME}/.zshrc" | grep 'zulu init')
+    local check_script=$(cat "${ZDOTDIR:-$HOME}/.zshrc" | grep -E -e '^zulu init')
     if [[ -n "$check_script" ]]; then
       return 0
     fi
